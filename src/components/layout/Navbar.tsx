@@ -135,7 +135,7 @@ export const Navbar = () => {
             </>
           )}
           {isSignedIn && (
-            <UserButton afterSignOutUrl="/" appearance={{ elements: { avatarBox: "w-10 h-10" } }} />
+            <UserButton appearance={{ elements: { avatarBox: "w-10 h-10" } }} />
           )}
         </div>
 
@@ -182,7 +182,8 @@ export const Navbar = () => {
             )}
             {isSignedIn && (
               <div className="flex justify-center py-2">
-                <UserButton afterSignOutUrl="/" appearance={{ elements: { avatarBox: "w-12 h-12" } }} />
+                <UserButton appearance={{ elements: { avatarBox: "w-12 h-12" } }} />
+
               </div>
             )}
           </div>
