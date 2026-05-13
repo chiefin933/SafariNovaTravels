@@ -124,7 +124,7 @@ model Booking {
   guests         Int
   totalPrice     Float
   status         BookingStatus @default(PENDING)
-  stripeSessionId String?      @unique
+
   createdAt      DateTime      @default(now())
   updatedAt      DateTime      @updatedAt
 }

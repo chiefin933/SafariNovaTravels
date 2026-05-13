@@ -1,8 +1,8 @@
 "use server";
 
-import { stripe } from "@/lib/stripe";
 import { db } from "@/lib/db";
 import { auth } from "@clerk/nextjs/server";
+import { BookingStatus } from "@prisma/client";
 
 export async function createBookingSession(packageId: string, guests: number, startDate: string) {
   const { userId } = await auth();
@@ -19,35 +19,21 @@ export async function createBookingSession(packageId: string, guests: number, st
     throw new Error("Package not found");
   }
 
-  const checkoutSession = await stripe.checkout.sessions.create({
-    payment_method_types: ["card"],
-    line_items: [
-      {
-        price_data: {
-          currency: "usd",
-          product_data: {
-            name: pkg.title,
-            description: `Booking for ${guests} guests on ${new Date(startDate).toLocaleDateString()}`,
-            images: pkg.images.length > 0 ? [pkg.images[0]] : [],
-          },
-          unit_amount: Math.round(pkg.price * 100),
-        },
-        quantity: guests,
-      },
-    ],
-    mode: "payment",
-    success_url: `${process.env.NEXT_PUBLIC_APP_URL}/dashboard/bookings?success=true`,
-    cancel_url: `${process.env.NEXT_PUBLIC_APP_URL}/packages/${pkg.slug}?cancelled=true`,
-    metadata: {
-      userId: userId,
-      packageId: packageId,
-      guests: guests.toString(),
-      startDate: startDate,
+  // Create booking directly in the database
+  await db.booking.create({
+    data: {
+      userId,
+      packageId,
+      guests,
+      startDate: new Date(startDate),
+      totalPrice: pkg.price * guests,
+      status: BookingStatus.PAID, // Auto-mark as paid for simulation
     },
   });
 
-  return { url: checkoutSession.url };
+  return { url: `/dashboard/bookings?success=true` };
 }
+
 
 export async function getBookings() {
   const { userId } = await auth();
