@@ -40,8 +40,8 @@ const formSchema = z.object({
   title: z.string().min(1, "Title is required"),
   slug: z.string().min(1, "Slug is required"),
   description: z.string().min(10, "Description must be at least 10 characters"),
-  price: z.coerce.number().min(1, "Price must be at least 1"),
-  duration: z.coerce.number().min(1, "Duration must be at least 1 day"),
+  price: z.number().min(1, "Price must be at least 1"),
+  duration: z.number().min(1, "Duration must be at least 1 day"),
   images: z.array(z.string()).min(1, "At least one image is required"),
   destinationId: z.string().min(1, "Destination is required"),
 });
@@ -169,7 +169,12 @@ export function CreatePackageModal() {
                   <FormItem>
                     <FormLabel className="font-bold">Price ($)</FormLabel>
                     <FormControl>
-                      <Input type="number" {...field} className="rounded-xl" />
+                      <Input 
+                        type="number" 
+                        {...field} 
+                        onChange={(e) => field.onChange(Number(e.target.value))}
+                        className="rounded-xl" 
+                      />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -182,7 +187,12 @@ export function CreatePackageModal() {
                   <FormItem>
                     <FormLabel className="font-bold">Duration (Days)</FormLabel>
                     <FormControl>
-                      <Input type="number" {...field} className="rounded-xl" />
+                      <Input 
+                        type="number" 
+                        {...field} 
+                        onChange={(e) => field.onChange(Number(e.target.value))}
+                        className="rounded-xl" 
+                      />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
